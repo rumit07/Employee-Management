@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script
+	src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+						$
+								.ajax({
+									url : 'http://demoapi.local/employee',
+									type : 'GET',
+									contentType : "application/json; charset=utf-8",
+									dataType : 'json',
+									processData : true,
+									success : function(json) {
+										var tr;
+										$
+												.each(
+														json,
+														function(index, value) {
+															tr = $('<tr/>');
+															tr
+																	.append("<td>"
+																			+ value.employee_id
+																			+ "</td>");
+															tr
+																	.append("<td>"
+																			+ value.first_name
+																			+ "</td>");
+															tr
+																	.append("<td>"
+																			+ value.last_name
+																			+ "</td>");
+															tr
+																	.append("<td>"
+																			+ value.username
+																			+ "</td>");
+															//tr.append("<td>" + value.DOB + "</td>");
+															tr.append("<td>"
+																	+ value.DOJ
+																	+ "</td>");
+															tr
+																	.append("<td>"
+																			+ value.designation
+																			+ "</td>");
+
+															tr
+																	.append("<button onclick='editEmployee("
+																			+ value.employee_id
+																			+ ")'> Edit </button>");
+															tr
+																	.append("<button onclick='deleteEmployee("
+																			+ value.employee_id
+																			+ ")'> Delete</button>");
+															$('#employee-data')
+																	.append(tr);
+														});
+
+									},
+									error : function(requestObject, error,
+											errorThrown) {
+										console.log(requestObject);
+										alert(error);
+										alert(errorThrown);
+									}
+
+								});
+
+					});
+</script>
+
+
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="">Employee System</a>
+		</div>
+		<ul class="nav navbar-nav">
+
+			<li><a href="employee.html">Employee Board</a></li>
+			<li><a href="employeeRecords.html">Department Board</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"></span>
+					Welcome Admin</a></li>
+			<li><a href="#"><span class="glyphicon glyphicon-log-in"></span>
+					Logout</a></li>
+		</ul>
+	</div>
+</nav>
+
+<body>
+
+	<div>
+		<select onchange=deptEmployee() class="dept-name"
+			id="select-department">
+			<option value="0">All</option>
+		</select>
+		<table class="table table-striped" border=2 id="employee-table">
+
+			<th>Employee Id</th>
+			<th>Employee First Name</th>
+			<th>Employee Late Name</th>
+			<th>Employee Late Name</th>
+			<th>DOJ</th>
+			<th>Designation</th>
+			<th>Action</th>
+			<tbody id="employee-data">
+			</tbody>
+
+
+
+
+		</table>
+		<button class="btn btn-primary" onclick="CreateForm()">Add</button>
+	</div>
+	<div id="employee-div" style="display: none">
+
+		<h2>Form</h2>
+
+		<form class="form-horizontal" id="employee-form">
+
+			<div class="form-group">
+
+
+				<label class="control-label col-sm-2" for="email">first name</label>
+				<div class="col-sm-10">
+					<input type="text" name="first_name" id="first_name"
+						required="true">
+				</div>
+
+			</div>
+			<div class="form-group">
+
+				<label class="control-label col-sm-2" for="pwd">last name</label>
+				<div class="col-sm-10">
+					<input type="text" name="last_name" id="last_name">
+				</div>
+
+			</div>
+			<div class="form-group">
+
+
+
+				<label class="control-label col-sm-2" for="pwd">username</label>
+
+				<div class="col-sm-10">
+					<input type="text" name="username" id="username" required="true">
+				</div>
+
+
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="pwd">designation</label>
+				<div class="col-sm-10">
+					<input type="text" name="designation" id="designation"
+						required="true">
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="pwd">Dob</label>
+				<div class="col-sm-10">
+					<input type="text" name="DOB" id="datedob" required="true">
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="pwd">Doj</label>
+				<div class="col-sm-10">
+					<input type="text" name="DOJ" id="datedoj" required="true">
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="pwd">password</label>
+				<div class="col-sm-10">
+					<input type="password" name="password" id="password"
+						required="true">
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="pwd">department</label>
+				<div class="col-sm-10">
+					<select name="dept_id" id='department' required="true"
+						class="dept-name">
+					</select>
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="pwd">Image</label>
+				<div class="col-sm-10">
+					<input type="file" name="file" id='file'>
+				</div>
+
+			</div>
+
+
+
+			<div class="form-group">
+
+				<div class="col-sm-10">
+					<button class="btn btn-primary" type="submit"
+						onclick=submitEmployeeForm() name="submit" id="employee-submit">Add
+						Employee</button>
+				</div>
+
+			</div>
+		</form>
+	</div>
+</body>
+
+
+<script>
+	$(function() {
+
+		var i = $("#datedob").datepicker({
+			dateFormat : 'yy-mm-dd',
+			maxDate : '0',
+			changeMonth : true,
+			changeYear : true,
+			yearRange : "-100:+0"
+		});
+
+		var j = $("#datedoj").datepicker({
+			dateFormat : 'yy-mm-dd',
+			maxDate : '0',
+			changeMonth : true,
+			changeYear : true,
+			yearRange : "-100:+0"
+		});
+
+	});
+</script>
+<script>
+	function CreateForm() {
+		$("#employee-div").show();
+	}
+
+	function deleteEmployee(id) {
+
+		$.ajax({
+			url : 'http://demoapi.local/employee/' + id,
+			type : 'DELETE',
+			crossDomain : true,
+			crossOrigin : true,
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			processData : true,
+			success : function(json) {
+
+				location.reload();
+
+			},
+			error : function(requestObject, error, errorThrown) {
+				console.log(requestObject);
+				alert(error);
+				alert(errorThrown);
+			}
+
+		});
+
+	}
+
+	function submitEmployeeForm() {
+
+		$('#employee-form').validate({
+			//ignore: [],
+			// initialize the plugin
+			rules : {
+				first_name : {
+					required : true,
+				},
+				last_name : {
+				// required: true,
+				},
+				username : {
+					required : true,
+				},
+				designation : {
+					required : true,
+				},
+				DOB : {
+					required : true,
+				},
+				DOJ : {
+					required : true,
+				},
+				dept_id : {
+					required : true,
+				},
+				password : {
+					required : true,
+					minlength : 8
+				}
+
+			},
+			messages : {
+				password : {
+					minlength : "password should be more than 8 characters!"
+				}
+			},
+			submitHandler : function(form, event) {
+				event.preventDefault();
+				var file = $('#file').val();
+				var o = {};
+				var a = $("#employee-form").serializeArray();
+				console.log(a);
+				a.push({
+					name : 'image',
+					value : file
+				});
+
+				$.each(a, function() {
+					if (o[this.name] !== undefined) {
+						if (!o[this.name].push) {
+							o[this.name] = [ o[this.name] ];
+						}
+						o[this.name].push(this.value || '');
+					} else {
+						o[this.name] = this.value || '';
+					}
+				});
+				var data1 = JSON.stringify(o);
+				$.ajax({
+					url : 'http://demoapi.local/employee',
+					type : 'POST',
+					crossDomain : true,
+					crossOrigin : true,
+					contentType : "application/json; charset=utf-8",
+					data : data1,
+					dataType : 'json',
+					processData : true,
+					success : function(json) {
+						//alert("inserted Successfully");
+						$('#employee-form').find("input").each(function(index) {
+							$(this).val("");
+						});
+						location.reload();
+					},
+					error : function(requestObject, error, errorThrown) {
+						console.log(requestObject);
+						alert(error);
+						alert(errorThrown);
+					}
+
+				});
+				return false;
+			}
+		});
+
+		//alert(file);
+
+	}
+
+	function editEmployee(id) {
+		$("#employee-submit").html("Update")
+		$("#employee-div").show();
+		$.ajax({
+			url : 'http://demoapi.local/employee/' + id,
+			type : 'GET',
+			crossDomain : true,
+			crossOrigin : true,
+			contentType : "application/json; charset=utf-8",
+
+			dataType : 'json',
+			processData : true,
+			success : function(json) {
+
+				//console.log(json[0].name);
+				$("#first_name").val(json[0].first_name);
+				$("#last_name").val(json[0].last_name);
+				$("#username").val(json[0].username);
+				$("#designation").val(json[0].designation);
+				$("#datedob").val(json[0].DOB);
+				$("#datedoj").val(json[0].DOJ);
+				$("#password").val(json[0].password);
+				$("#department").val(json[0].dept_id);
+				$("#file").val(json[0].image);
+				$("#employee-submit").attr("onclick",
+						"updateEmployeeForm(" + id + ")");
+
+			},
+			error : function(requestObject, error, errorThrown) {
+				console.log(requestObject);
+				alert(error);
+				alert(errorThrown);
+			}
+
+		});
+
+	}
+
+	function updateEmployeeForm(id) {
+		//alert("in");
+		$('#employee-form').validate({
+			//ignore: [],
+			// initialize the plugin
+			rules : {
+				first_name : {
+					required : true,
+				},
+				last_name : {
+				// required: true,
+				},
+				username : {
+					required : true,
+				},
+				designation : {
+					required : true,
+				},
+				DOB : {
+					required : true,
+				},
+				DOJ : {
+					required : true,
+				},
+				dept_id : {
+					required : true,
+				},
+				password : {
+					required : true,
+				}
+
+			},
+			submitHandler : function(form, event) {
+				event.preventDefault();
+				var file = $('#file').val();
+				var o = {};
+				var a = $("#employee-form").serializeArray();
+				console.log(a);
+				a.push({
+					name : 'image',
+					value : file
+				});
+
+				$.each(a, function() {
+					if (o[this.name] !== undefined) {
+						if (!o[this.name].push) {
+							o[this.name] = [ o[this.name] ];
+						}
+						o[this.name].push(this.value || '');
+					} else {
+						o[this.name] = this.value || '';
+					}
+				});
+				var data1 = JSON.stringify(o);
+				$.ajax({
+					url : 'http://demoapi.local/employee/' + id,
+					type : 'PUT',
+					crossDomain : true,
+					crossOrigin : true,
+					contentType : "application/json; charset=utf-8",
+					data : data1,
+					dataType : 'json',
+					processData : true,
+					success : function(json) {
+						//alert("updated Successfully");
+						$('#employee-form').find("input").each(function(index) {
+							$(this).val("");
+						});
+						location.reload();
+					},
+					error : function(requestObject, error, errorThrown) {
+						console.log(requestObject);
+						alert(error);
+						alert(errorThrown);
+					}
+
+				});
+				return false;
+			}
+		});
+
+	}
+
+	function deptEmployee() {
+		var id = $("#select-department").val();
+		//alert(id);
+		$.ajax({
+			url : 'http://demoapi.local/employee?dept_id=' + id,
+			type : 'GET',
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			processData : true,
+			success : function(json) {
+				$('#employee-data').html('');
+
+				var tr;
+				$.each(json, function(index, value) {
+					tr = $('<tr/>');
+					tr.append("<td>" + value.employee_id + "</td>");
+					tr.append("<td>" + value.first_name + "</td>");
+					tr.append("<td>" + value.last_name + "</td>");
+					tr.append("<td>" + value.username + "</td>");
+					//tr.append("<td>" + value.DOB + "</td>");
+					tr.append("<td>" + value.DOJ + "</td>");
+					tr.append("<td>" + value.designation + "</td>");
+
+					tr.append("<button onclick='editEmployee("
+							+ value.employee_id + ")'> Edit </button>");
+					tr.append("<button onclick='deleteEmployee("
+							+ value.employee_id + ")'> Delete</button>");
+					$('#employee-data').append(tr);
+				});
+
+			},
+			error : function(requestObject, error, errorThrown) {
+				console.log(requestObject);
+				alert(error);
+				alert(errorThrown);
+			}
+
+		});
+
+	}
+</script>
+
+
+<script type="text/javascript">
+	$.ajax({
+		url : 'http://demoapi.local/department',
+		type : 'GET',
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		processData : true,
+		success : function(json) {
+			$.each(json, function(i, item) {
+				$('.dept-name').append($('<option>', {
+					value : item.dept_id,
+					text : item.dept_name
+				}));
+			});
+		},
+		error : function(requestObject, error, errorThrown) {
+			console.log(requestObject);
+			alert(error);
+			alert(errorThrown);
+		}
+
+	});
+</script>
+
+
+</html>
+
